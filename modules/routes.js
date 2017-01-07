@@ -4,7 +4,7 @@ import App from './App';
 import About from './About';
 import Home from './Home';
 
-module.exports = (
+export default (
   <Route path="/" component={App}>
     <IndexRoute component={Home}/>
     <Route path="/about" component={About}/>
