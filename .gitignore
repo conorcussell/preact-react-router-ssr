@@ -1,2 +1,4 @@
 node_modules
 *.log
+./public/bundle.js
+server.bundle.js
