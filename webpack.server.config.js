@@ -11,6 +11,11 @@ module.exports = {
 
   target: 'node',
 
+  node: {
+    __filename: true,
+    __dirname: true
+  },
+
   // keep node_module paths out of the bundle
   externals: fs.readdirSync(path.resolve(__dirname, 'node_modules')).concat([
     'preact-compat', 'preact'
@@ -19,14 +24,13 @@ module.exports = {
     return ext
   }, {}),
 
-  node: {
-    __filename: true,
-    __dirname: true
-  },
-
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader?presets[]=es2015&presets[]=react' }
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader?presets[]=es2015&presets[]=react'
+      }
     ]
   },
   resolve: {
@@ -36,3 +40,12 @@ module.exports = {
     }
   }
 }
+
+
+  // // keep node_module paths out of the bundle
+  // externals: fs.readdirSync(path.resolve(__dirname, 'node_modules')).concat([
+  //   'react-dom/server', 'react/addons'
+  // ]).reduce(function (ext, mod) {
+  //   ext[mod] = 'commonjs ' + mod
+  //   return ext
+  // }, {}),
