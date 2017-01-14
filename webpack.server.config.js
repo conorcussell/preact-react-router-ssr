@@ -34,10 +34,10 @@ module.exports = {
     ]
   },
   resolve: {
-    alias: {
-      'react': 'preact-compat',
-      'react-dom': 'preact-compat'
-    }
+        alias: {
+            'react': 'preact-compat',
+            'react-dom': 'preact-compat'
+        }
   }
 }
 
