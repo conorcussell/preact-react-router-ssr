@@ -20,7 +20,7 @@ module.exports = {
   // keep node_module paths out of the bundle
   externals: [nodeExternals({
         // this WILL include `jquery` and `webpack/hot/dev-server` in the bundle, as well as `lodash/*`
-        whitelist: ['preact', 'preact-compat']
+        whitelist: ['preact', 'preact-compat', 'react', 'react-dom']
     })],
 
   module: {
