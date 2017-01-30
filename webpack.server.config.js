@@ -1,5 +1,6 @@
 var fs = require('fs')
 var path = require('path')
+var nodeExternals = require('webpack-node-externals')
 
 module.exports = {
 
@@ -12,12 +13,10 @@ module.exports = {
   target: 'node',
 
   // keep node_module paths out of the bundle
-  externals: fs.readdirSync(path.resolve(__dirname, 'node_modules')).concat([
-    'preact-compat', 'preact'
-  ]).reduce(function (ext, mod) {
-    ext[mod] = 'commonjs ' + mod
-    return ext
-  }, {}),
+  externals: [nodeExternals({
+        // this WILL include `jquery` and `webpack/hot/dev-server` in the bundle, as well as `lodash/*`
+        whitelist: ['preact', 'preact-compat']
+    })],
 
   node: {
     __filename: true,
