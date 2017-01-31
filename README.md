@@ -12,20 +12,21 @@ app.get('*', (req, res) => {
 
     const appHtml = renderToString(<RouterContext {...props}/>);
 
-    console.log(appHtml); // this is just [object Object]
+    console.log(appHtml); // this is just an empty div.
 
     res.send(renderPage(appHtml));
   });
 });
 ```
 
-This is using `react-dom/server` `renderToString`, which works fine with React, but returns `[object Object]` when using Preact
+This is using `react-dom/server` `renderToString`, which works fine with React, but returns an empty `<div>` when using Preact
 
-I'm unsure whether my setup for transpiling the server code is correctly set up, I'm including `preact` + `preact-compat` as externals. Using this config
+I'm unsure whether my setup for transpiling the server code is correctly set up, I'm including `preact` + `preact-compat` using [`webpack-node-externals`](https://github.com/frostney/webpack-node-externals). Using this config
 
 ```
 var fs = require('fs')
 var path = require('path')
+var nodeExternals = require('webpack-node-externals')
 
 module.exports = {
 
@@ -43,22 +44,27 @@ module.exports = {
   },
 
   // keep node_module paths out of the bundle
-  // but include preact and preact-compat as externals
-  externals: fs.readdirSync(path.resolve(__dirname, 'node_modules')).concat([
-    'preact-compat', 'preact'
-  ]).reduce(function (ext, mod) {
-    ext[mod] = 'commonjs ' + mod
-    return ext
-  }, {}),
+  externals: [nodeExternals({
+        // this WILL include `jquery` and `webpack/hot/dev-server` in the bundle, as well as `lodash/*`
+        whitelist: ['preact', 'preact-compat', 'react', 'react-dom']
+    })],
 
   module: {
     loaders: [
       {
-        test: /\.js/,
+        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader?presets[]=es2015&presets[]=react'
       }
     ]
+  },
+  resolve: {
+        alias: {
+            'react': 'preact-compat',
+            'react-dom': 'preact-compat'
+        }
   }
 }
 ```
+
+This seems to work in terms of aliasing React/React DOM - as preact-compat/server and preact show up in the server bundle, but the actual rendering of the app using RouterContext just results in an empty div.
